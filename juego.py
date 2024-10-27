@@ -9,8 +9,9 @@ class Player:
     def __init__(self, pos_x, pos_y):
         self.pos_x = pos_x
         self.pos_y = pos_y
-        self.vel_x = 1.
-        self.vel_y = 1.
+        self.vel_x = 2.
+        self.vel_y = 2.
+        
     def draw_point(self):
         pygame.draw.rect(DISPLAYSURF, RED, (self.pos_x ,self.pos_y,20,20))
     
@@ -29,7 +30,7 @@ class Player:
         
         
     def velocity_limit(self):
-        if (np.array([self.vel_x,self.vel_y])**2).sum()**0.5>=3.:
+        if (np.array([self.vel_x,self.vel_y])**2).sum()**0.5>=4.:
             self.vel_x = self.vel_x * 0.5
             self.vel_y = self.vel_y * 0.5 
         
@@ -52,10 +53,10 @@ class Point:
     def draw_point(self):
         pygame.draw.rect(DISPLAYSURF, GREEN, (self.pos_x ,self.pos_y,20,20))
 
-    def direction_to_mouse(self):
-        [pos_x_mouse,pos_y_mouse]=pygame.mouse.get_pos()    
-        dir_x = (pos_x_mouse - self.pos_x) 
-        dir_y = (pos_y_mouse - self.pos_y) 
+    def direction_to_char(self,x,y):
+            
+        dir_x = (x - self.pos_x) 
+        dir_y = (y - self.pos_y) 
         
         vec_pos = np.array([dir_x, dir_y])
         vel = np.array(vec_pos)/((vec_pos**2).sum()**0.5)
@@ -69,7 +70,7 @@ class Point:
 
     
     def velocity_limit(self):
-        if (np.array([self.vel_x,self.vel_y])**2).sum()**0.5>=5.:
+        if (np.array([self.vel_x,self.vel_y])**2).sum()**0.5>=1.5:
             self.vel_x = self.vel_x * 0.5
             self.vel_y = self.vel_y * 0.5 
 
@@ -93,12 +94,11 @@ def display_game():
                 
         DISPLAYSURF.fill(WHITE)   
         Point_1.draw_point()
-        Point_2.draw_point()
         Player_1.draw_point()
         
         Player_1.movement()
-        Point_1.direction_to_mouse()
-        Point_2.direction_to_mouse()
+        Point_1.direction_to_char(Player_1.pos_x,Player_1.pos_y)
+        
         pygame.display.update()
         clock.tick(60)
         
