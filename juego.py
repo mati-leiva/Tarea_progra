@@ -63,7 +63,7 @@ class Point:
         self.color = GREEN
       
     def draw_point(self):
-        pygame.draw.rect(DISPLAYSURF, self.color, (self.pos_x ,self.pos_y,20,20))    
+        pygame.draw.circle(DISPLAYSURF, self.color, (self.pos_x ,self.pos_y),10)    
 
     def direction_to_char(self,x,y):
             
@@ -91,7 +91,7 @@ class Point:
     
     def colide(self, x, y):
         player = [x,y]  
-        rect = pygame.Rect((self.pos_x ,self.pos_y,25,25))
+        rect = pygame.Rect((self.pos_x,self.pos_y,11,11))
         self.color = GREEN if rect.collidepoint(player) else RED
 
 
