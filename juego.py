@@ -2,9 +2,6 @@ import pygame
 import sys
 import pygame.locals as pl
 import numpy as np
-
-
-
 class Player:
     def __init__(self, pos_x, pos_y):
         self.pos_x = pos_x
@@ -53,7 +50,6 @@ class Player:
         elif self.pos_y >= height - 11:
             self.vel_y = 0
             self.pos_y = height - 10
-
 class Point:
     def __init__(self, pos_x, pos_y):
         self.pos_x = pos_x
@@ -67,8 +63,8 @@ class Point:
 
     def direction_to_char(self,x,y):
             
-        dir_x = (x - self.pos_x) 
-        dir_y = (y - self.pos_y) 
+        dir_x = (x +10- self.pos_x) 
+        dir_y = (y +10- self.pos_y) 
         
         vec_pos = np.array([dir_x, dir_y])
         vel = np.array(vec_pos)/((vec_pos**2).sum()**0.5)
@@ -90,13 +86,21 @@ class Point:
         self.pos_y += self.vel_y
     
     def colide(self, x, y):
-        player = [x,y]  
-        rect = pygame.Rect((self.pos_x,self.pos_y,11,11))
+        player = [x+10,y+10]  
+        rect = pygame.Rect((self.pos_x,self.pos_y,11,11)) 
         self.color = GREEN if rect.collidepoint(player) else RED
 
 
 def display_game():
     # We display a colection of points
+    time_interval = 500 # 500 milliseconds == 0.1 seconds
+    next_step_time = 0
+    
+    font = pygame.font.Font('Andika-Bold.ttf', 32)
+    text = font.render("hola", True, GREEN, BLUE)
+    textRect = text.get_rect()
+    textRect.center = (width // 2, height // 2)
+
     Point_1 = Point(200,200)
     Player_1 = Player(100,100)
     
@@ -105,17 +109,26 @@ def display_game():
             if event.type == pl.QUIT:
                     pygame.quit()
                     sys.exit()
-                    
+        current_time = pygame.time.get_ticks()
+        if current_time > next_step_time:
+            next_step_time += time_interval
+                                
         DISPLAYSURF.fill(WHITE)   
         Point_1.draw_point()
         Player_1.draw_point()
-            
+        
+        DISPLAYSURF.blit(text, textRect)
+        
         Player_1.movement()
         Point_1.direction_to_char(Player_1.pos_x,Player_1.pos_y)
         Point_1.colide(Player_1.pos_x,Player_1.pos_y)    
         
         pygame.display.update()
         clock.tick(60)
+        
+        
+        
+pygame.init()
             
 # Starting the colors
 BLACK = (10,   10,   10)
@@ -126,6 +139,7 @@ BLUE = (10,   10, 255)
 
 # Seting up the display
 width, height = 400, 400
+
 
 
 DISPLAYSURF = pygame.display.set_mode((width,height),0, 32)
