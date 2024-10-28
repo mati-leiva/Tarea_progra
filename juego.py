@@ -60,9 +60,10 @@ class Point:
         self.pos_y = pos_y
         self.vel_x = 0.
         self.vel_y = 0.
+        self.color = GREEN
       
     def draw_point(self):
-        pygame.draw.rect(DISPLAYSURF, GREEN, (self.pos_x ,self.pos_y,20,20))    
+        pygame.draw.rect(DISPLAYSURF, self.color, (self.pos_x ,self.pos_y,20,20))    
 
     def direction_to_char(self,x,y):
             
@@ -87,7 +88,11 @@ class Point:
     def update_position(self):
         self.pos_x += self.vel_x
         self.pos_y += self.vel_y
-        pass
+    
+    def colide(self, x, y):
+        player = [x,y]  
+        rect = pygame.Rect((self.pos_x ,self.pos_y,25,25))
+        self.color = GREEN if rect.collidepoint(player) else RED
 
 
 def display_game():
@@ -107,7 +112,8 @@ def display_game():
             
         Player_1.movement()
         Point_1.direction_to_char(Player_1.pos_x,Player_1.pos_y)
-            
+        Point_1.colide(Player_1.pos_x,Player_1.pos_y)    
+        
         pygame.display.update()
         clock.tick(60)
             
