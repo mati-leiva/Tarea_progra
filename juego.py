@@ -2,8 +2,10 @@ import pygame
 import sys
 import pygame.locals as pl
 import numpy as np
-class Player:
-    def __init__(self, pos_x, pos_y):
+
+
+class Player: #Se genera un objeto para funcionar como avatar del jugador
+    def __init__(self, pos_x, pos_y): #Define los atributos iniciales del jugador
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.vel_x = 2.
@@ -13,7 +15,7 @@ class Player:
     def draw_point(self):
         pygame.draw.rect(DISPLAYSURF, RED, (self.pos_x ,self.pos_y,20,20))
     
-    def movement(self):
+    def movement(self): #Cambia el atributo de velocidad del jugador según las teclas presionadas
         if pygame.key.get_pressed()[pl.K_a]:
             self.vel_x -= 0.2
         if pygame.key.get_pressed()[pl.K_d]:
@@ -26,12 +28,12 @@ class Player:
         self.velocity_limit()
         self.update_position() 
         
-    def velocity_limit(self):
+    def velocity_limit(self): #Define un limite del atributo velocidad
         if (np.array([self.vel_x,self.vel_y])**2).sum()**0.5>=4.:
             self.vel_x = self.vel_x * 0.5
             self.vel_y = self.vel_y * 0.5 
         
-    def update_position(self):
+    def update_position(self): #Cambia el atributo de posición según el atributo de velocidad, con un maximo y minimo
         
         if 8 < self.pos_x < width - 8:
             self.pos_x += self.vel_x
@@ -50,18 +52,20 @@ class Player:
         elif self.pos_y >= height - 11:
             self.vel_y = 0
             self.pos_y = height - 10
-class Point:
-    def __init__(self, pos_x, pos_y):
+
+
+class Point: #Se define el objeto a usar como enemigo/objetivo del juego
+    def __init__(self, pos_x, pos_y): #Define atributos de condiciones iniciales
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.vel_x = 0.
         self.vel_y = 0.
         self.color = GREEN
       
-    def draw_point(self):
+    def draw_point(self): 
         pygame.draw.circle(DISPLAYSURF, self.color, (self.pos_x ,self.pos_y),10)    
 
-    def direction_to_char(self,x,y):
+    def direction_to_char(self,x,y): #Metodo con entrada que incluira la posición del jugador para dirigirse a este
             
         dir_x = (x +10- self.pos_x) 
         dir_y = (y +10- self.pos_y) 
@@ -76,16 +80,16 @@ class Point:
         
         Point.update_position(self)
 
-    def velocity_limit(self):
+    def velocity_limit(self): #Limita el atributo de velocidad
         if (np.array([self.vel_x,self.vel_y])**2).sum()**0.5>=2.5:
             self.vel_x = self.vel_x * 0.5
             self.vel_y = self.vel_y * 0.5 
 
-    def update_position(self):
+    def update_position(self): #Cambia atributo posición según atributo velocidad
         self.pos_x += self.vel_x
         self.pos_y += self.vel_y
     
-    def colide(self, x, y):
+    def colide(self, x, y): #Metodo a usar para verificar si los puntos chocan contra jugador
         player = [x+10,y+10]  
         rect = pygame.Rect((self.pos_x,self.pos_y,11,11)) 
         self.color = GREEN if rect.collidepoint(player) else RED
@@ -101,6 +105,7 @@ def display_game():
     textRect = text.get_rect()
     textRect.center = (width // 2, height // 2)
 
+    #Inicializa los objetos de jugador y punto
     Point_1 = Point(200,200)
     Player_1 = Player(100,100)
     
@@ -130,14 +135,14 @@ def display_game():
         
 pygame.init()
             
-# Starting the colors
+#Comenzando los colores
 BLACK = (10,   10,   10)
 WHITE = (240, 240, 240)
 RED = (255,   10,   10)
 GREEN = (31, 255,   10)
 BLUE = (10,   10, 255)
 
-# Seting up the display
+#Preparando el display
 width, height = 400, 400
 
 
@@ -145,6 +150,6 @@ width, height = 400, 400
 DISPLAYSURF = pygame.display.set_mode((width,height),0, 32)
 clock = pygame.time.Clock()  
 pygame.display.set_caption("hello World")
-# Starting the game
+# Inicializando el juego
 
 display_game()
