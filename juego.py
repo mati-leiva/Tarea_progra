@@ -15,7 +15,7 @@ class Player: #Se genera un objeto para funcionar como avatar del jugador
     def draw_point(self):
         pygame.draw.rect(DISPLAYSURF, RED, (self.pos_x ,self.pos_y,20,20))
     
-    def movement(self): #Cambia el atributo de velocidad del jugador según las teclas presionadas
+    def movement(self,lista): #Cambia el atributo de velocidad del jugador según las teclas presionadas
         if pygame.key.get_pressed()[pl.K_a]:
             self.vel_x -= 0.2
         if pygame.key.get_pressed()[pl.K_d]:
@@ -23,7 +23,9 @@ class Player: #Se genera un objeto para funcionar como avatar del jugador
         if pygame.key.get_pressed()[pl.K_w]:
             self.vel_y -= 0.2
         if pygame.key.get_pressed()[pl.K_s]:
-            self.vel_y += 0.2     
+            self.vel_y += 0.2
+        if pygame.key.get_pressed()[pl.K_SPACE]:
+            lista.append(LASSER(self.pos_x,self.pos_y,self.vel_x,self.vel_y))
             
         self.velocity_limit()
         self.update_position() 
@@ -95,6 +97,27 @@ class Point: #Se define el objeto a usar como enemigo/objetivo del juego
         self.color = GREEN if rect.collidepoint(player) else RED
 
 
+class LASSER: #Se define una clase con objeto los laseres disparados por la nave
+    def __init__(self,pos_x,pos_y,velp_x,velp_y): #constructor
+        self.pos_x=pos_x
+        self.pos_y=pos_y
+        self.vel_x=velp_x/(velp_x**2+velp_y**2)
+        self.vel_y=velp_y/(velp_x**2+velp_y**2)
+    
+    def draw_lasser(): #dibujo
+        pygame.draw.rect(DISPLAYSURF, BLUEVIOLET, (self.pos_x ,self.pos_y,2,5))
+    
+    def update_position_LASSER(self): #mover a siguiente posicion
+        self.pos_x += self.vel_x
+        self.pos_y += self.vel_y
+    
+    def out_of_bound(self): #verifica si se encuentra dentro de la pantalla
+        if -11 < self.pos_x < 11 or -11 < self.pos_y < 11:
+            return False
+        else:
+            return True
+
+
 def display_game():
     # We display a colection of points
     time_interval = 500 # 500 milliseconds == 0.1 seconds
@@ -105,9 +128,10 @@ def display_game():
     textRect = text.get_rect()
     textRect.center = (width // 2, height // 2)
 
-    #Inicializa los objetos de jugador y punto
+    #Inicializa los objetos de jugador, punto y se genera una lista para contener objetos lasser
     Point_1 = Point(200,200)
     Player_1 = Player(100,100)
+    Lista_LASSER = []
     
     while True:
         for event in pygame.event.get():
@@ -123,10 +147,15 @@ def display_game():
         Player_1.draw_point()
         
         DISPLAYSURF.blit(text, textRect)
-        
-        Player_1.movement()
+
+        #Actualización de posiciones de los objetos
+        Player_1.movement(Lista_LASSER)
         Point_1.direction_to_char(Player_1.pos_x,Player_1.pos_y)
-        Point_1.colide(Player_1.pos_x,Player_1.pos_y)    
+        Point_1.colide(Player_1.pos_x,Player_1.pos_y)
+        for i in range(0,len(Lista_LASSER)):
+            Lista_LASSER[i].update_position_LASSER()
+            if Lista_LASSER[i].out_of_bound==True:
+                del Lista_LASSER[i]
         
         pygame.display.update()
         clock.tick(60)
