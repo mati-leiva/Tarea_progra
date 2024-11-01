@@ -11,6 +11,7 @@ class Player: #Se genera un objeto para funcionar como avatar del jugador
         self.vel_x = 2.
         self.vel_y = 2.
         self.rect = (self.pos_x,self.pos_y,20,20)
+        self.cooldown_int = 0
         
     def draw_point(self):
         pygame.draw.rect(DISPLAYSURF, RED, (self.pos_x ,self.pos_y,20,20))
@@ -24,8 +25,11 @@ class Player: #Se genera un objeto para funcionar como avatar del jugador
             self.vel_y -= 0.2
         if pygame.key.get_pressed()[pl.K_s]:
             self.vel_y += 0.2
-        if pygame.key.get_pressed()[pl.K_SPACE]:
+        
+        self.cooldown()
+        if pygame.key.get_pressed()[pl.K_j] and self.cooldown_int == 0:
             lista.append(LASSER(self.pos_x,self.pos_y,self.vel_x,self.vel_y))
+            self.cooldown_int =1
             
         self.velocity_limit()
         self.update_position() 
@@ -55,6 +59,11 @@ class Player: #Se genera un objeto para funcionar como avatar del jugador
             self.vel_y = 0
             self.pos_y = height - 10
 
+    def cooldown(self):
+        if self.cooldown_int >=15 :
+            self.cooldown_int = 0
+        elif self.cooldown_int > 0:
+            self.cooldown_int += 1  
 
 class Point: #Se define el objeto a usar como enemigo/objetivo del juego
     def __init__(self, pos_x, pos_y): #Define atributos de condiciones iniciales
@@ -83,9 +92,9 @@ class Point: #Se define el objeto a usar como enemigo/objetivo del juego
         Point.update_position(self)
 
     def velocity_limit(self): #Limita el atributo de velocidad
-        if (np.array([self.vel_x,self.vel_y])**2).sum()**0.5>=2.5:
-            self.vel_x = self.vel_x * 0.5
-            self.vel_y = self.vel_y * 0.5 
+        if (np.array([self.vel_x,self.vel_y])**2).sum()**0.5>=2.:
+            self.vel_x = self.vel_x * 0.2
+            self.vel_y = self.vel_y * 0.2 
 
     def update_position(self): #Cambia atributo posición según atributo velocidad
         self.pos_x += self.vel_x
@@ -101,11 +110,11 @@ class LASSER: #Se define una clase con objeto los laseres disparados por la nave
     def __init__(self,pos_x,pos_y,velp_x,velp_y): #constructor
         self.pos_x=pos_x
         self.pos_y=pos_y
-        self.vel_x=velp_x/(velp_x**2+velp_y**2)
-        self.vel_y=velp_y/(velp_x**2+velp_y**2)
+        self.vel_x=velp_x/(velp_x**2+velp_y**2) * 12
+        self.vel_y=velp_y/(velp_x**2+velp_y**2) * 12
     
-    def draw_lasser(): #dibujo
-        pygame.draw.rect(DISPLAYSURF, BLUEVIOLET, (self.pos_x ,self.pos_y,2,5))
+    def draw_lasser(self): #dibujo
+        pygame.draw.rect(DISPLAYSURF, BLUE, (self.pos_x +10 ,self.pos_y + 10,5,5))
     
     def update_position_LASSER(self): #mover a siguiente posicion
         self.pos_x += self.vel_x
@@ -154,6 +163,8 @@ def display_game():
         Point_1.colide(Player_1.pos_x,Player_1.pos_y)
         for i in range(0,len(Lista_LASSER)):
             Lista_LASSER[i].update_position_LASSER()
+            Lista_LASSER[i].draw_lasser()
+            
             if Lista_LASSER[i].out_of_bound==True:
                 del Lista_LASSER[i]
         
