@@ -11,6 +11,7 @@ class Player: #Se genera un objeto para funcionar como avatar del jugador
         self.vel_x = 2.
         self.vel_y = 2.
         self.rect = (self.pos_x,self.pos_y,20,20)
+        self.bullets = 100
         
     def draw_point(self):
         pygame.draw.rect(DISPLAYSURF, RED, (self.pos_x ,self.pos_y,20,20))
@@ -32,8 +33,17 @@ class Player: #Se genera un objeto para funcionar como avatar del jugador
             self.vel_x = self.vel_x * 0.5
             self.vel_y = self.vel_y * 0.5 
             
+    def show_bullets(self): #Muestra la cantidad de balas restantes
+        font = pygame.font.Font('Andika-Bold.ttf', 8)
+        text = font.render(str(self.bullets), True, BLUE, WHITE)
+        textRect = text.get_rect()
+        textRect.center = (self.pos_x+10, self.pos_y+30)
+        DISPLAYSURF.blit(text, textRect)
+            
             
     def shoot(self,lista): #Metodo para disparar un lasser
+        if self.bullets > 0:
+            self.bullets -= 1
             mouse_x, mouse_y = pygame.mouse.get_pos()
             lista.append(LASSER(self.pos_x,self.pos_y,mouse_x - self.pos_x,mouse_y - self.pos_y))
          
@@ -125,11 +135,6 @@ def display_game():
     time_interval = 500 # 500 milliseconds == 0.1 seconds
     next_step_time = 0
     
-    font = pygame.font.Font('Andika-Bold.ttf', 32)
-    text = font.render("hola", True, GREEN, BLUE)
-    textRect = text.get_rect()
-    textRect.center = (width // 2, height // 2)
-
     #Inicializa los objetos de jugador, punto y se genera una lista para contener objetos lasser
     Point_1 = Point(200,200)
     Player_1 = Player(100,100)
@@ -150,8 +155,7 @@ def display_game():
         DISPLAYSURF.fill(WHITE)   
         Point_1.draw_point()
         Player_1.draw_point()
-        
-        DISPLAYSURF.blit(text, textRect)
+        Player_1.show_bullets()
 
         #Actualización de posiciones de los objetos
         Player_1.movement()
