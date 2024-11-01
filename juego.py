@@ -152,6 +152,8 @@ def display_game():
     Player_1 = Player(100, 100)
     Lista_LASSER = []
     List_Enemies = []
+    
+    pygame.time.set_timer(pygame.USEREVENT, 2000)
 
     List_Enemies.append(Point(np.random.randint(width-10, width), np.random.randint(height-10, height)))
     
@@ -162,20 +164,19 @@ def display_game():
                 sys.exit()
             if event.type == pl.MOUSEBUTTONDOWN:
                 Player_1.shoot(Lista_LASSER)
+            if event.type == pygame.USEREVENT:
+                List_Enemies.append(Point(np.random.randint(0, width), np.random.randint(0, height)))
 
         current_time = pygame.time.get_ticks()
         if current_time > next_step_time:
             next_step_time += time_interval
-
-
-
+        
+        
             
         DISPLAYSURF.fill(WHITE)
 
         Player_1.draw_point()
         Player_1.show_bullets()
-
-        
 
         # Actualización de posiciones de los objetos
 
