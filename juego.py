@@ -4,7 +4,6 @@ import pygame.locals as pl
 import numpy as np
 import math
 
-
 class Player:  # Se genera un objeto para funcionar como avatar del jugador
     def __init__(self, pos_x, pos_y):  # Define los atributos iniciales del jugador
         self.pos_x = pos_x
@@ -75,7 +74,6 @@ class Player:  # Se genera un objeto para funcionar como avatar del jugador
             self.vel_y = 0
             self.pos_y = height - 10
 
-
 class Point:  # Se define el objeto a usar como enemigo/objetivo del juego
     def __init__(self, pos_x, pos_y):  # Define atributos de condiciones iniciales
         self.pos_x = pos_x
@@ -120,7 +118,6 @@ class Point:  # Se define el objeto a usar como enemigo/objetivo del juego
         rect = pygame.Rect((self.pos_x, self.pos_y, 11, 11))
         self.color = GREEN if rect.collidepoint(player) else RED
 
-
 class LASSER:  # Se define una clase con objeto los laseres disparados por la nave
     def __init__(self, pos_x, pos_y, velp_x, velp_y):  # constructor
         self.pos_x = pos_x
@@ -141,7 +138,6 @@ class LASSER:  # Se define una clase con objeto los laseres disparados por la na
         else:
             return True
 
-
 def display_game():
     # We display a colection of points
     time_interval = 500  # 500 milliseconds == 0.1 seconds
@@ -152,11 +148,15 @@ def display_game():
     Player_1 = Player(100, 100)
     Lista_LASSER = []
     List_Enemies = []
-    
+
     pygame.time.set_timer(pygame.USEREVENT, 2000)
 
-    List_Enemies.append(Point(np.random.randint(width-10, width), np.random.randint(height-10, height)))
-    
+    List_Enemies.append(
+        Point(
+            np.random.randint(width - 10, width), np.random.randint(height - 10, height)
+        )
+    )
+
     while True:
         for event in pygame.event.get():
             if event.type == pl.QUIT:
@@ -165,14 +165,14 @@ def display_game():
             if event.type == pl.MOUSEBUTTONDOWN:
                 Player_1.shoot(Lista_LASSER)
             if event.type == pygame.USEREVENT:
-                List_Enemies.append(Point(np.random.randint(0, width), np.random.randint(0, height)))
+                List_Enemies.append(
+                    Point(np.random.randint(0, width), np.random.randint(0, height))
+                )
 
         current_time = pygame.time.get_ticks()
         if current_time > next_step_time:
             next_step_time += time_interval
-        
-        
-            
+
         DISPLAYSURF.fill(WHITE)
 
         Player_1.draw_point()
@@ -197,7 +197,6 @@ def display_game():
         pygame.display.update()
         clock.tick(60)
 
-
 pygame.init()
 
 # Comenzando los colores
@@ -209,7 +208,6 @@ BLUE = (10, 10, 255)
 
 # Preparando el display
 width, height = 400, 400
-
 
 DISPLAYSURF = pygame.display.set_mode((width, height), 0, 32)
 clock = pygame.time.Clock()
