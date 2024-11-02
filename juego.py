@@ -119,6 +119,25 @@ class Point:  # Se define el objeto a usar como enemigo/objetivo del juego
         player = [x + 10, y + 10]
         rect = pygame.Rect((self.pos_x, self.pos_y, 11, 11))
         self.color = GREEN if rect.collidepoint(player) else RED
+        
+class Consumable:  # Se define un objeto consumible
+    def __init__(self, pos_x, pos_y):  # constructor
+        self.pos_x = pos_x
+        self.pos_y = pos_y
+        self.color = BLUE
+    
+    def draw_point(self):  # dibujo
+        pygame.draw.circle(DISPLAYSURF, self.color, (self.pos_x, self.pos_y), 10)
+    
+    def colide(self, x, y):  # verifica si el jugador colisiona con el objeto
+        player = [x + 10, y + 10]
+        rect = pygame.Rect((self.pos_x, self.pos_y, 11, 11))
+        self.color = GREEN if rect.collidepoint(player) else BLUE
+        if rect.collidepoint(player):
+            return True
+        else:
+            return False
+    
 
 
 class LASSER:  # Se define una clase con objeto los laseres disparados por la nave
@@ -152,8 +171,10 @@ def display_game():
     Player_1 = Player(100, 100)
     Lista_LASSER = []
     List_Enemies = []
+    List_Consumables = []
 
     pygame.time.set_timer(pygame.USEREVENT, 2000)
+    pygame.time.set_timer(pygame.USEREVENT+1, 5000)
     random_angle = np.random.randint(0, 360)
     List_Enemies.append(Point(math.cos(random_angle) * 400 + 10, math.sin(random_angle) * 400 + 10))
 
@@ -168,6 +189,11 @@ def display_game():
                 List_Enemies.append(
                     Point(np.random.randint(0, width), np.random.randint(0, height))
                 )
+            if event.type == pygame.USEREVENT+1:
+                List_Consumables.append(
+                    Consumable(np.random.randint(0, width), np.random.randint(0, height))
+                )
+                
 
         current_time = pygame.time.get_ticks()
         if current_time > next_step_time:
@@ -181,6 +207,12 @@ def display_game():
         # Actualización de posiciones de los objetos
 
         Player_1.movement()
+        for i in range(0, len(List_Consumables)):
+            List_Consumables[i].draw_point()
+            if List_Consumables[i].colide(Player_1.pos_x, Player_1.pos_y):
+                Player_1.bullets += 10
+                del List_Consumables[i]
+
 
         for i in range(0, len(Lista_LASSER)):
             Lista_LASSER[i].update_position_LASSER()
