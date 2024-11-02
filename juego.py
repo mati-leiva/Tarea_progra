@@ -213,7 +213,6 @@ def display_game():
                 Player_1.bullets += 10
                 del List_Consumables[i]
 
-
         for i in range(0, len(Lista_LASSER)):
             Lista_LASSER[i].update_position_LASSER()
             Lista_LASSER[i].draw_lasser()
