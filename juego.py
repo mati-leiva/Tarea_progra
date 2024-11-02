@@ -165,8 +165,7 @@ class LASSER:  # Se define una clase con objeto los laseres disparados por la na
         rect = pygame.Rect((self.pos_x, self.pos_y, 25, 25))
         if rect.collidepoint(enemy):
             return True
-        else:
-            return False
+        return False
 
 
 def display_game():
