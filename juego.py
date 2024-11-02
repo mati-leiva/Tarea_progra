@@ -4,6 +4,7 @@ import pygame.locals as pl
 import numpy as np
 import math
 
+
 class Player:  # Se genera un objeto para funcionar como avatar del jugador
     def __init__(self, pos_x, pos_y):  # Define los atributos iniciales del jugador
         self.pos_x = pos_x
@@ -74,6 +75,7 @@ class Player:  # Se genera un objeto para funcionar como avatar del jugador
             self.vel_y = 0
             self.pos_y = height - 10
 
+
 class Point:  # Se define el objeto a usar como enemigo/objetivo del juego
     def __init__(self, pos_x, pos_y):  # Define atributos de condiciones iniciales
         self.pos_x = pos_x
@@ -118,6 +120,7 @@ class Point:  # Se define el objeto a usar como enemigo/objetivo del juego
         rect = pygame.Rect((self.pos_x, self.pos_y, 11, 11))
         self.color = GREEN if rect.collidepoint(player) else RED
 
+
 class LASSER:  # Se define una clase con objeto los laseres disparados por la nave
     def __init__(self, pos_x, pos_y, velp_x, velp_y):  # constructor
         self.pos_x = pos_x
@@ -138,6 +141,7 @@ class LASSER:  # Se define una clase con objeto los laseres disparados por la na
         else:
             return True
 
+
 def display_game():
     # We display a colection of points
     time_interval = 500  # 500 milliseconds == 0.1 seconds
@@ -150,12 +154,8 @@ def display_game():
     List_Enemies = []
 
     pygame.time.set_timer(pygame.USEREVENT, 2000)
-
-    List_Enemies.append(
-        Point(
-            np.random.randint(width - 10, width), np.random.randint(height - 10, height)
-        )
-    )
+    random_angle = np.random.randint(0, 360)
+    List_Enemies.append(Point(math.cos(random_angle) * 400 + 10, math.sin(random_angle) * 400 + 10))
 
     while True:
         for event in pygame.event.get():
@@ -180,22 +180,24 @@ def display_game():
 
         # Actualización de posiciones de los objetos
 
-        for i in range(0, len(List_Enemies)):
-            List_Enemies[i].draw_point()
-            List_Enemies[i].direction_to_char(Player_1.pos_x, Player_1.pos_y)
-            List_Enemies[i].colide(Player_1.pos_x, Player_1.pos_y)
-
         Player_1.movement()
 
         for i in range(0, len(Lista_LASSER)):
             Lista_LASSER[i].update_position_LASSER()
             Lista_LASSER[i].draw_lasser()
-
             if Lista_LASSER[i].out_of_bound == True:
                 del Lista_LASSER[i]
 
+        for i in range(0, len(List_Enemies)):
+            List_Enemies[i].draw_point()
+            List_Enemies[i].direction_to_char(Player_1.pos_x, Player_1.pos_y)
+            List_Enemies[i].colide(Player_1.pos_x, Player_1.pos_y)
+            if List_Enemies[i].color == GREEN:
+                Player_1.bullets = Player_1.bullets // 2
+
         pygame.display.update()
         clock.tick(60)
+
 
 pygame.init()
 
