@@ -159,6 +159,14 @@ class LASSER:  # Se define una clase con objeto los laseres disparados por la na
             return False
         else:
             return True
+        
+    def colide(self, x, y):
+        enemy = [x +5, y +5]
+        rect = pygame.Rect((self.pos_x, self.pos_y, 25, 25))
+        if rect.collidepoint(enemy):
+            return True
+        else:
+            return False
 
 
 def display_game():
@@ -219,12 +227,19 @@ def display_game():
             if Lista_LASSER[i].out_of_bound == True:
                 del Lista_LASSER[i]
 
-        for i in range(0, len(List_Enemies)):
-            List_Enemies[i].draw_point()
-            List_Enemies[i].direction_to_char(Player_1.pos_x, Player_1.pos_y)
-            List_Enemies[i].colide(Player_1.pos_x, Player_1.pos_y)
-            if List_Enemies[i].color == GREEN:
+        for i in List_Enemies:
+            i.draw_point()
+            i.direction_to_char(Player_1.pos_x, Player_1.pos_y)
+            i.colide(Player_1.pos_x, Player_1.pos_y)
+            if i.color == GREEN:
                 Player_1.bullets = Player_1.bullets // 2
+                List_Enemies.remove(i)
+                
+            for j in Lista_LASSER:
+                if j.colide(i.pos_x, i.pos_y) == True:
+                    List_Enemies.remove(i)
+                    Lista_LASSER.remove(j)
+                    break
                 
 
         pygame.display.update()
