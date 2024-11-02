@@ -131,7 +131,7 @@ class Consumable:  # Se define un objeto consumible
     
     def colide(self, x, y):  # verifica si el jugador colisiona con el objeto
         player = [x + 10, y + 10]
-        rect = pygame.Rect((self.pos_x, self.pos_y, 11, 11))
+        rect = pygame.Rect((self.pos_x, self.pos_y, 20, 20))
         self.color = GREEN if rect.collidepoint(player) else BLUE
         if rect.collidepoint(player):
             return True
@@ -207,11 +207,11 @@ def display_game():
         # Actualización de posiciones de los objetos
 
         Player_1.movement()
-        for i in range(0, len(List_Consumables)):
-            List_Consumables[i].draw_point()
-            if List_Consumables[i].colide(Player_1.pos_x, Player_1.pos_y):
+        for i in List_Consumables:
+            i.draw_point()
+            if i.colide(Player_1.pos_x, Player_1.pos_y) == True:
                 Player_1.bullets += 10
-                del List_Consumables[i]
+                List_Consumables.remove(i)
 
         for i in range(0, len(Lista_LASSER)):
             Lista_LASSER[i].update_position_LASSER()
@@ -225,6 +225,7 @@ def display_game():
             List_Enemies[i].colide(Player_1.pos_x, Player_1.pos_y)
             if List_Enemies[i].color == GREEN:
                 Player_1.bullets = Player_1.bullets // 2
+                
 
         pygame.display.update()
         clock.tick(60)
