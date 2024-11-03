@@ -189,9 +189,27 @@ def display_game():
     List_Enemies = []
     List_Consumables = []
     continue_game = True
+    menu_game = True
     pygame.time.set_timer(pygame.USEREVENT, 2000)
     pygame.time.set_timer(pygame.USEREVENT + 1, 8000)
-
+    
+    while menu_game:
+        for event in pygame.event.get():
+            if event.type == pl.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pl.KEYDOWN:
+                if event.key == pl.K_SPACE:
+                    menu_game = False       
+        DISPLAYSURF.blit(background, (0, 0))
+        font = pygame.font.Font("Andika-Bold.ttf", 25)
+        text = font.render("TAREA DE PROGRAMACION", True, BLUE)
+        textRect = text.get_rect()
+        textRect.center = (width // 2, height // 2)
+        DISPLAYSURF.blit(text, textRect)
+        pygame.display.update()
+        clock.tick(60)
+     
     while continue_game:
         while True:
             random_angle = np.random.uniform(0, 3.1415 * 2)
