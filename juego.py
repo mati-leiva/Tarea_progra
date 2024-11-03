@@ -291,19 +291,15 @@ def display_game():
             if Player_1.bullets == 0:
                 continue_game = False
                 break
-            
-            
-                
+                       
             font = pygame.font.Font("Andika-Bold.ttf", 25)
             text = font.render(str(killed_enemies), True, BLUE)
             textRect = text.get_rect()
             textRect.center = (width // 2, height // 2)
             DISPLAYSURF.blit(text, textRect)
-            
             pygame.display.update()
             clock.tick(60)
             
-
     while True:
         for event in pygame.event.get():
             if event.type == pl.QUIT:
