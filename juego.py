@@ -219,6 +219,7 @@ def display_game():
                     sys.exit()
                 if event.type == pl.MOUSEBUTTONDOWN:
                     Player_1.shoot(Lista_LASSER)
+                    laser.play()
                 if event.type == pygame.USEREVENT:
                     List_Enemies.append(
                         Point(
@@ -317,6 +318,8 @@ fire = pygame.transform.scale(original_lasser, (15, 15))
 
 bg = pygame.image.load("blue.png")
 background = pygame.transform.scale(bg, (400, 400))
+
+laser = pygame.mixer.Sound("images/laser.wav")
 
 # Comenzando los colores
 BLACK = (10, 10, 10)
