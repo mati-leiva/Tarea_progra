@@ -105,7 +105,7 @@ class Point:  # Se define el objeto a usar como enemigo/objetivo del juego
         Point.update_position(self)
 
     def velocity_limit(self):  # Limita el atributo de velocidad
-        if (np.array([self.vel_x, self.vel_y]) ** 2).sum() ** 0.5 >= 2.0:
+        if (np.array([self.vel_x, self.vel_y]) ** 2).sum() ** 0.5 >= 4.1:
             self.vel_x = self.vel_x * 0.2
             self.vel_y = self.vel_y * 0.2
 
@@ -117,7 +117,7 @@ class Point:  # Se define el objeto a usar como enemigo/objetivo del juego
         self, x, y
     ):  # Metodo a usar para verificar si los puntos chocan contra jugador
         player = [x + 10, y + 10]
-        rect = pygame.Rect((self.pos_x, self.pos_y, 11, 11))
+        rect = pygame.Rect((self.pos_x, self.pos_y, 13, 13))
         self.color = GREEN if rect.collidepoint(player) else RED
         
 class Consumable:  # Se define un objeto consumible
@@ -137,8 +137,6 @@ class Consumable:  # Se define un objeto consumible
             return True
         else:
             return False
-    
-
 
 class LASSER:  # Se define una clase con objeto los laseres disparados por la nave
     def __init__(self, pos_x, pos_y, velp_x, velp_y):  # constructor
@@ -167,7 +165,6 @@ class LASSER:  # Se define una clase con objeto los laseres disparados por la na
             return True
         return False
 
-
 def display_game():
     # We display a colection of points
     time_interval = 500  # 500 milliseconds == 0.1 seconds
@@ -179,13 +176,13 @@ def display_game():
     Lista_LASSER = []
     List_Enemies = []
     List_Consumables = []
+    Time = 2000
 
-    pygame.time.set_timer(pygame.USEREVENT, 2000)
-    pygame.time.set_timer(pygame.USEREVENT+1, 5000)
-    random_angle = np.random.randint(0, 360)
-    List_Enemies.append(Point(math.cos(random_angle) * 400 + 10, math.sin(random_angle) * 400 + 10))
-
+    pygame.time.set_timer(pygame.USEREVENT, Time)
+    pygame.time.set_timer(pygame.USEREVENT+1, 8000)
+    
     while True:
+        random_angle = np.random.uniform(0, 3.1415 * 2)
         for event in pygame.event.get():
             if event.type == pl.QUIT:
                 pygame.quit()
@@ -193,15 +190,12 @@ def display_game():
             if event.type == pl.MOUSEBUTTONDOWN:
                 Player_1.shoot(Lista_LASSER)
             if event.type == pygame.USEREVENT:
-                List_Enemies.append(
-                    Point(np.random.randint(0, width), np.random.randint(0, height))
-                )
+                List_Enemies.append(Point(math.cos(random_angle) * 400 + 10, math.sin(random_angle) * 400 + 10))
             if event.type == pygame.USEREVENT+1:
                 List_Consumables.append(
                     Consumable(np.random.randint(0, width), np.random.randint(0, height))
                 )
                 
-
         current_time = pygame.time.get_ticks()
         if current_time > next_step_time:
             next_step_time += time_interval
@@ -219,27 +213,30 @@ def display_game():
             if i.colide(Player_1.pos_x, Player_1.pos_y) == True:
                 Player_1.bullets += 10
                 List_Consumables.remove(i)
+                break
 
         for i in range(0, len(Lista_LASSER)):
             Lista_LASSER[i].update_position_LASSER()
             Lista_LASSER[i].draw_lasser()
             if Lista_LASSER[i].out_of_bound == True:
                 del Lista_LASSER[i]
-
+        
         for i in List_Enemies:
             i.draw_point()
             i.direction_to_char(Player_1.pos_x, Player_1.pos_y)
             i.colide(Player_1.pos_x, Player_1.pos_y)
             if i.color == GREEN:
-                Player_1.bullets = Player_1.bullets // 2
+                Player_1.bullets //= 2
                 List_Enemies.remove(i)
-                
+                continue  # elimina el objeto de la lista y continua con el siguiente
+            
             for j in Lista_LASSER:
-                if j.colide(i.pos_x, i.pos_y) == True:
+                if j.colide(i.pos_x, i.pos_y):
                     List_Enemies.remove(i)
                     Lista_LASSER.remove(j)
-                    break
+                    break  # Rompe el ciclo for para hacer menos iteraciones
                 
+
 
         pygame.display.update()
         clock.tick(60)
