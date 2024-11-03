@@ -15,7 +15,7 @@ class Player:  # Se genera un objeto para funcionar como avatar del jugador
         self.bullets = 100
 
     def draw_point(self):
-        pygame.draw.rect(DISPLAYSURF, RED, (self.pos_x, self.pos_y, 20, 20))
+        DISPLAYSURF.blit(ship,(self.pos_x-10, self.pos_y-10))
 
     def movement(
         self,
@@ -85,7 +85,7 @@ class Point:  # Se define el objeto a usar como enemigo/objetivo del juego
         self.color = GREEN
 
     def draw_point(self):
-        pygame.draw.circle(DISPLAYSURF, self.color, (self.pos_x, self.pos_y), 10)
+        DISPLAYSURF.blit(asteroid,(self.pos_x-15, self.pos_y-15))
 
     def direction_to_char(
         self, x, y
@@ -127,7 +127,7 @@ class Consumable:  # Se define un objeto consumible
         self.color = BLUE
     
     def draw_point(self):  # dibujo
-        pygame.draw.circle(DISPLAYSURF, self.color, (self.pos_x, self.pos_y), 10)
+        DISPLAYSURF.blit(bullet,(self.pos_x-10, self.pos_y-10))
     
     def colide(self, x, y):  # verifica si el jugador colisiona con el objeto
         player = [x + 10, y + 10]
@@ -148,7 +148,7 @@ class LASSER:  # Se define una clase con objeto los laseres disparados por la na
         self.vel_y = math.sin(math.atan2(velp_y, velp_x)) * 10
 
     def draw_lasser(self):  # dibujo
-        pygame.draw.rect(DISPLAYSURF, BLUE, (self.pos_x + 10, self.pos_y + 10, 5, 5))
+        DISPLAYSURF.blit(fire,(self.pos_x, self.pos_y))
 
     def update_position_LASSER(self):  # mover a siguiente posicion
         self.pos_x += self.vel_x
@@ -160,7 +160,7 @@ class LASSER:  # Se define una clase con objeto los laseres disparados por la na
         else:
             return True
         
-    def colide(self, x, y):
+    def colide(self, x, y): #verifica si ha colisionado con un objeto punto
         enemy = [x +5, y +5]
         rect = pygame.Rect((self.pos_x, self.pos_y, 25, 25))
         if rect.collidepoint(enemy):
@@ -174,7 +174,6 @@ def display_game():
     next_step_time = 0
 
     # Inicializa los objetos de jugador, punto y se genera una lista para contener objetos lasser
-    Point_1 = Point(200, 200)
     Player_1 = Player(100, 100)
     Lista_LASSER = []
     List_Enemies = []
@@ -206,13 +205,12 @@ def display_game():
         if current_time > next_step_time:
             next_step_time += time_interval
 
-        DISPLAYSURF.fill(WHITE)
+        DISPLAYSURF.blit(background,(0,0))
 
         Player_1.draw_point()
         Player_1.show_bullets()
 
         # Actualización de posiciones de los objetos
-
         Player_1.movement()
         for i in List_Consumables:
             i.draw_point()
@@ -246,6 +244,21 @@ def display_game():
 
 
 pygame.init()
+
+original_ship=pygame.image.load("playerShip1_red.png")
+ship=pygame.transform.scale(original_ship,(40,30))
+
+original_asteroid=pygame.image.load("meteorBrown_big1.png")
+asteroid=pygame.transform.scale(original_asteroid,(25,25))
+
+original_bullet=pygame.image.load("powerupYellow_bolt.png")
+bullet=pygame.transform.scale(original_bullet,(20,20))
+
+original_lasser=pygame.image.load("star_silver.png")
+fire=pygame.transform.scale(original_lasser,(15,15))
+
+bg=pygame.image.load("blue.png")
+background=pygame.transform.scale(bg,(400,400))
 
 # Comenzando los colores
 BLACK = (10, 10, 10)
