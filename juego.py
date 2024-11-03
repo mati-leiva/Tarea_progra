@@ -180,75 +180,91 @@ def display_game():
     Lista_LASSER = []
     List_Enemies = []
     List_Consumables = []
-
-    pygame.time.set_timer(pygame.USEREVENT, 1000000)
-    pygame.time.set_timer(pygame.USEREVENT+1, 2000)
+    continue_game = True
+    pygame.time.set_timer(pygame.USEREVENT, 2000)
+    pygame.time.set_timer(pygame.USEREVENT+1, 8000)
     
-    while True:
-        random_angle = np.random.uniform(0, 3.1415 * 2)
-        for event in pygame.event.get():
-            if event.type == pl.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pl.MOUSEBUTTONDOWN:
-                Player_1.shoot(Lista_LASSER)
-            if event.type == pygame.USEREVENT:
-                List_Enemies.append(Point(math.cos(random_angle) * 400 + 10, math.sin(random_angle) * 400 + 10))
-            if event.type == pygame.USEREVENT+1:
-                List_Consumables.append(
-                    Consumable(np.random.randint(0, width), np.random.randint(0, height))
-                )
+    while continue_game:
+        while True:
+            random_angle = np.random.uniform(0, 3.1415 * 2)
+            for event in pygame.event.get():
+                if event.type == pl.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pl.MOUSEBUTTONDOWN:
+                    Player_1.shoot(Lista_LASSER)
+                if event.type == pygame.USEREVENT:
+                    List_Enemies.append(Point(math.cos(random_angle) * 400 + 10, math.sin(random_angle) * 400 + 10))
+                if event.type == pygame.USEREVENT+1:
+                    List_Consumables.append(
+                        Consumable(np.random.randint(0, width), np.random.randint(0, height))
+                    )
 
-        current_time = pygame.time.get_ticks()
-        if current_time > next_step_time:
-            next_step_time += time_interval
-
-
-        mx, my = pygame.mouse.get_pos()
-        dx, dy = mx - Player_1.pos_x, my - Player_1.pos_y
-        angle = math.degrees(math.atan2(-dy, dx)) -90
-        rot_image = pygame.transform.rotate(ship, angle)
-        
-        DISPLAYSURF.blit(background,(0,0))
-
-        Player_1.draw_point(rot_image)
-        Player_1.show_bullets()
-
-        # Actualización de posiciones de los objetos
-        Player_1.movement()
-        for i in List_Consumables:
-            i.draw_point()
-            if i.colide(Player_1.pos_x, Player_1.pos_y) == True:
-                Player_1.bullets += 10
-                if Player_1.bullets >= 100:
-                    Player_1.bullets = 100 
-                List_Consumables.remove(i)
-
-        for i in Lista_LASSER:
-            i.update_position_LASSER()
-            i.draw_lasser()
-            if i.out_of_bound == True:
-                Lista_LASSER.remove(i)
-        
-        for i in List_Enemies:
-            i.draw_point()
-            i.direction_to_char(Player_1.pos_x, Player_1.pos_y)
-            i.colide(Player_1.pos_x, Player_1.pos_y)
-            if i.color == GREEN:
-                Player_1.bullets //= 2
-                List_Enemies.remove(i)
-                continue  # elimina el objeto de la lista y continua con el siguiente
-            
-            for j in Lista_LASSER:
-                if j.colide(i.pos_x, i.pos_y):
-                    List_Enemies.remove(i)
-                    Lista_LASSER.remove(j)
-                    break  # Rompe el ciclo for para hacer menos iteraciones
+            current_time = pygame.time.get_ticks()
+            if current_time > next_step_time:
+                next_step_time += time_interval
                 
-        pygame.display.update()
-        clock.tick(60)
+            mx, my = pygame.mouse.get_pos()
+            dx, dy = mx - Player_1.pos_x, my - Player_1.pos_y
+            angle = math.degrees(math.atan2(-dy, dx)) -90
+            rot_image = pygame.transform.rotate(ship, angle)
 
+            DISPLAYSURF.blit(background,(0,0))
 
+            Player_1.draw_point(rot_image)
+            Player_1.show_bullets()
+
+            # Actualización de posiciones de los objetos
+            Player_1.movement()
+            for i in List_Consumables:
+                i.draw_point()
+                if i.colide(Player_1.pos_x, Player_1.pos_y) == True:
+                    Player_1.bullets += 10
+                    if Player_1.bullets >= 100:
+                        Player_1.bullets = 100 
+                    List_Consumables.remove(i)
+
+            for i in Lista_LASSER:
+                i.update_position_LASSER()
+                i.draw_lasser()
+                if i.out_of_bound == True:
+                    Lista_LASSER.remove(i)
+
+            for i in List_Enemies:
+                i.draw_point()
+                i.direction_to_char(Player_1.pos_x, Player_1.pos_y)
+                i.colide(Player_1.pos_x, Player_1.pos_y)
+                if i.color == GREEN:
+                    Player_1.bullets //= 2
+                    List_Enemies.remove(i)
+                    continue  # elimina el objeto de la lista y continua con el siguiente
+                
+                for j in Lista_LASSER:
+                    if j.colide(i.pos_x, i.pos_y):
+                        List_Enemies.remove(i)
+                        Lista_LASSER.remove(j)
+                        break  # Rompe el ciclo for para hacer menos iteraciones
+                    
+                    
+            if Player_1.bullets == 0:
+                continue_game = False
+                break
+            pygame.display.update()
+            clock.tick(60)
+
+    while True:
+            for event in pygame.event.get():
+                if event.type == pl.QUIT:
+                    pygame.quit()
+                    sys.exit()
+            DISPLAYSURF.blit(background,(0,0))
+            font = pygame.font.Font("Andika-Bold.ttf", 50)
+            text = font.render("GAME OVER", True, RED)
+            textRect = text.get_rect()
+            textRect.center = (width // 2, height // 2)
+            DISPLAYSURF.blit(text, textRect)
+            pygame.display.update()
+            clock.tick(60)
 
 
 ############################################################################################################
