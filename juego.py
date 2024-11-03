@@ -36,7 +36,7 @@ class Player:  # Se genera un objeto para funcionar como avatar del jugador
             self.vel_y = self.vel_y * 0.5
 
     def show_bullets(self):  # Muestra la cantidad de balas restantes
-        font = pygame.font.Font("Andika-Bold.ttf", 8)
+        font = pygame.font.Font("Andika-Bold.ttf", 10)
         text = font.render(str(self.bullets), True, BLUE, WHITE)
         textRect = text.get_rect()
         textRect.center = (self.pos_x + 10, self.pos_y + 30)
@@ -134,8 +134,8 @@ class Consumable:  # Se define un objeto consumible
         DISPLAYSURF.blit(bullet,(self.pos_x-10, self.pos_y-10))
     
     def colide(self, x, y):  # verifica si el jugador colisiona con el objeto
-        player = [x+15, y+15 ]
-        rect = pygame.Rect((self.pos_x, self.pos_y, 25, 25))
+        player = [x+11, y+11 ]
+        rect = pygame.Rect((self.pos_x, self.pos_y, 30, 30))
         if rect.collidepoint(player):
             return True
         return False
@@ -182,7 +182,7 @@ def display_game():
     List_Consumables = []
 
     pygame.time.set_timer(pygame.USEREVENT, 1000000)
-    pygame.time.set_timer(pygame.USEREVENT+1, 8000)
+    pygame.time.set_timer(pygame.USEREVENT+1, 2000)
     
     while True:
         random_angle = np.random.uniform(0, 3.1415 * 2)
@@ -220,6 +220,8 @@ def display_game():
             i.draw_point()
             if i.colide(Player_1.pos_x, Player_1.pos_y) == True:
                 Player_1.bullets += 10
+                if Player_1.bullets >= 100:
+                    Player_1.bullets = 100 
                 List_Consumables.remove(i)
 
         for i in Lista_LASSER:
