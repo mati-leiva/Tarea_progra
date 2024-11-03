@@ -271,6 +271,7 @@ def display_game():
                 if i.color == GREEN:
                     Player_1.bullets //= 2
                     List_Enemies.remove(i)
+                    hurt.play()
                     continue  # elimina el objeto de la lista y continua con el siguiente
 
                 for j in Lista_LASSER:
@@ -320,6 +321,7 @@ bg = pygame.image.load("blue.png")
 background = pygame.transform.scale(bg, (400, 400))
 
 laser = pygame.mixer.Sound("images/laser.wav")
+hurt  = pygame.mixer.Sound("images/hurt.wav")
 
 # Comenzando los colores
 BLACK = (10, 10, 10)
