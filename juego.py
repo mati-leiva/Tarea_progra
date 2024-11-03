@@ -4,7 +4,6 @@ import pygame.locals as pl
 import numpy as np
 import math
 
-
 class Player:  # Se genera un objeto para funcionar como avatar del jugador
     def __init__(self, pos_x, pos_y):  # Define los atributos iniciales del jugador
         self.pos_x = pos_x
@@ -14,7 +13,7 @@ class Player:  # Se genera un objeto para funcionar como avatar del jugador
         self.rect = (self.pos_x, self.pos_y, 20, 20)
         self.bullets = 100
 
-    def draw_point(self):
+    def draw_point(self,ship):
         DISPLAYSURF.blit(ship,(self.pos_x-10, self.pos_y-10))
 
     def movement(
@@ -30,7 +29,7 @@ class Player:  # Se genera un objeto para funcionar como avatar del jugador
             self.vel_y += 0.2
         self.velocity_limit()
         self.update_position()
-
+    
     def velocity_limit(self):  # Define un limite del atributo velocidad
         if (np.array([self.vel_x, self.vel_y]) ** 2).sum() ** 0.5 >= 4.0:
             self.vel_x = self.vel_x * 0.5
@@ -75,8 +74,10 @@ class Player:  # Se genera un objeto para funcionar como avatar del jugador
             self.vel_y = 0
             self.pos_y = height - 10
 
+############################################################################################################
 
 class Point:  # Se define el objeto a usar como enemigo/objetivo del juego
+    
     def __init__(self, pos_x, pos_y):  # Define atributos de condiciones iniciales
         self.pos_x = pos_x
         self.pos_y = pos_y
@@ -86,6 +87,7 @@ class Point:  # Se define el objeto a usar como enemigo/objetivo del juego
 
     def draw_point(self):
         DISPLAYSURF.blit(asteroid,(self.pos_x-15, self.pos_y-15))
+        
 
     def direction_to_char(
         self, x, y
@@ -105,7 +107,7 @@ class Point:  # Se define el objeto a usar como enemigo/objetivo del juego
         Point.update_position(self)
 
     def velocity_limit(self):  # Limita el atributo de velocidad
-        if (np.array([self.vel_x, self.vel_y]) ** 2).sum() ** 0.5 >= 2.0:
+        if (np.array([self.vel_x, self.vel_y]) ** 2).sum() ** 0.5 >= 4.1:
             self.vel_x = self.vel_x * 0.2
             self.vel_y = self.vel_y * 0.2
 
@@ -117,9 +119,11 @@ class Point:  # Se define el objeto a usar como enemigo/objetivo del juego
         self, x, y
     ):  # Metodo a usar para verificar si los puntos chocan contra jugador
         player = [x + 10, y + 10]
-        rect = pygame.Rect((self.pos_x, self.pos_y, 11, 11))
+        rect = pygame.Rect((self.pos_x, self.pos_y, 13, 13))
         self.color = GREEN if rect.collidepoint(player) else RED
-        
+
+############################################################################################################
+
 class Consumable:  # Se define un objeto consumible
     def __init__(self, pos_x, pos_y):  # constructor
         self.pos_x = pos_x
@@ -130,16 +134,14 @@ class Consumable:  # Se define un objeto consumible
         DISPLAYSURF.blit(bullet,(self.pos_x-10, self.pos_y-10))
     
     def colide(self, x, y):  # verifica si el jugador colisiona con el objeto
-        player = [x + 10, y + 10]
-        rect = pygame.Rect((self.pos_x, self.pos_y, 20, 20))
-        self.color = GREEN if rect.collidepoint(player) else BLUE
+        player = [x+15, y+15 ]
+        rect = pygame.Rect((self.pos_x, self.pos_y, 25, 25))
         if rect.collidepoint(player):
             return True
-        else:
-            return False
+        return False
     
-
-
+############################################################################################################
+    
 class LASSER:  # Se define una clase con objeto los laseres disparados por la nave
     def __init__(self, pos_x, pos_y, velp_x, velp_y):  # constructor
         self.pos_x = pos_x
@@ -157,8 +159,7 @@ class LASSER:  # Se define una clase con objeto los laseres disparados por la na
     def out_of_bound(self):  # verifica si se encuentra dentro de la pantalla
         if -11 < self.pos_x < 11 or -11 < self.pos_y < 11:
             return False
-        else:
-            return True
+        return True
         
     def colide(self, x, y): #verifica si ha colisionado con un objeto punto
         enemy = [x +5, y +5]
@@ -167,10 +168,11 @@ class LASSER:  # Se define una clase con objeto los laseres disparados por la na
             return True
         return False
 
+############################################################################################################
 
 def display_game():
-    # We display a colection of points
-    time_interval = 500  # 500 milliseconds == 0.1 seconds
+      # We display a colection of points
+    time_interval = 500  
     next_step_time = 0
 
     # Inicializa los objetos de jugador, punto y se genera una lista para contener objetos lasser
@@ -179,12 +181,11 @@ def display_game():
     List_Enemies = []
     List_Consumables = []
 
-    pygame.time.set_timer(pygame.USEREVENT, 2000)
-    pygame.time.set_timer(pygame.USEREVENT+1, 5000)
-    random_angle = np.random.randint(0, 360)
-    List_Enemies.append(Point(math.cos(random_angle) * 400 + 10, math.sin(random_angle) * 400 + 10))
-
+    pygame.time.set_timer(pygame.USEREVENT, 1000000)
+    pygame.time.set_timer(pygame.USEREVENT+1, 8000)
+    
     while True:
+        random_angle = np.random.uniform(0, 3.1415 * 2)
         for event in pygame.event.get():
             if event.type == pl.QUIT:
                 pygame.quit()
@@ -192,22 +193,25 @@ def display_game():
             if event.type == pl.MOUSEBUTTONDOWN:
                 Player_1.shoot(Lista_LASSER)
             if event.type == pygame.USEREVENT:
-                List_Enemies.append(
-                    Point(np.random.randint(0, width), np.random.randint(0, height))
-                )
+                List_Enemies.append(Point(math.cos(random_angle) * 400 + 10, math.sin(random_angle) * 400 + 10))
             if event.type == pygame.USEREVENT+1:
                 List_Consumables.append(
                     Consumable(np.random.randint(0, width), np.random.randint(0, height))
                 )
-                
 
         current_time = pygame.time.get_ticks()
         if current_time > next_step_time:
             next_step_time += time_interval
 
+
+        mx, my = pygame.mouse.get_pos()
+        dx, dy = mx - Player_1.pos_x, my - Player_1.pos_y
+        angle = math.degrees(math.atan2(-dy, dx)) -90
+        rot_image = pygame.transform.rotate(ship, angle)
+        
         DISPLAYSURF.blit(background,(0,0))
 
-        Player_1.draw_point()
+        Player_1.draw_point(rot_image)
         Player_1.show_bullets()
 
         # Actualización de posiciones de los objetos
@@ -218,43 +222,47 @@ def display_game():
                 Player_1.bullets += 10
                 List_Consumables.remove(i)
 
-        for i in range(0, len(Lista_LASSER)):
-            Lista_LASSER[i].update_position_LASSER()
-            Lista_LASSER[i].draw_lasser()
-            if Lista_LASSER[i].out_of_bound == True:
-                del Lista_LASSER[i]
-
+        for i in Lista_LASSER:
+            i.update_position_LASSER()
+            i.draw_lasser()
+            if i.out_of_bound == True:
+                Lista_LASSER.remove(i)
+        
         for i in List_Enemies:
             i.draw_point()
             i.direction_to_char(Player_1.pos_x, Player_1.pos_y)
             i.colide(Player_1.pos_x, Player_1.pos_y)
             if i.color == GREEN:
-                Player_1.bullets = Player_1.bullets // 2
+                Player_1.bullets //= 2
                 List_Enemies.remove(i)
-                
+                continue  # elimina el objeto de la lista y continua con el siguiente
+            
             for j in Lista_LASSER:
-                if j.colide(i.pos_x, i.pos_y) == True:
+                if j.colide(i.pos_x, i.pos_y):
                     List_Enemies.remove(i)
                     Lista_LASSER.remove(j)
-                    break
+                    break  # Rompe el ciclo for para hacer menos iteraciones
                 
-
         pygame.display.update()
         clock.tick(60)
 
 
+
+
+############################################################################################################
+
 pygame.init()
 
-original_ship=pygame.image.load("playerShip1_red.png")
+original_ship=pygame.image.load("images/playerShip1_red.png")
 ship=pygame.transform.scale(original_ship,(40,30))
 
-original_asteroid=pygame.image.load("meteorBrown_big1.png")
+original_asteroid=pygame.image.load("images/meteorBrown_big1.png")
 asteroid=pygame.transform.scale(original_asteroid,(25,25))
 
-original_bullet=pygame.image.load("powerupYellow_bolt.png")
+original_bullet=pygame.image.load("images/powerupYellow_bolt.png")
 bullet=pygame.transform.scale(original_bullet,(20,20))
 
-original_lasser=pygame.image.load("star_silver.png")
+original_lasser=pygame.image.load("images/star_silver.png")
 fire=pygame.transform.scale(original_lasser,(15,15))
 
 bg=pygame.image.load("blue.png")
