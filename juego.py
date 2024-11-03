@@ -4,6 +4,7 @@ import pygame.locals as pl
 import numpy as np
 import math
 
+
 ##T¿ODO FUNCINOA GRADKS
 class Player:  # Se genera un objeto para funcionar como avatar del jugador
     def __init__(self, pos_x, pos_y):  # Define los atributos iniciales del jugador
@@ -185,14 +186,17 @@ def display_game():
 
     # Inicializa los objetos de jugador, punto y se genera una lista para contener objetos lasser
     Player_1 = Player(100, 100)
+    killed_enemies = 0
     Lista_LASSER = []
     List_Enemies = []
     List_Consumables = []
     continue_game = True
     menu_game = True
+    
+    
     pygame.time.set_timer(pygame.USEREVENT, 2000)
     pygame.time.set_timer(pygame.USEREVENT + 1, 8000)
-    
+
     while menu_game:
         for event in pygame.event.get():
             if event.type == pl.QUIT:
@@ -200,16 +204,19 @@ def display_game():
                 sys.exit()
             if event.type == pl.KEYDOWN:
                 if event.key == pl.K_SPACE:
-                    menu_game = False       
+                    menu_game = False
         DISPLAYSURF.blit(background, (0, 0))
         font = pygame.font.Font("Andika-Bold.ttf", 25)
         text = font.render("TAREA DE PROGRAMACION", True, BLUE)
         textRect = text.get_rect()
         textRect.center = (width // 2, height // 2)
+        text2 = font.render("Presiona espacio para jugar", True, BLUE)
         DISPLAYSURF.blit(text, textRect)
+        textRect.center = (width // 2, height // 2 + 50)
+        DISPLAYSURF.blit(text2, textRect)
         pygame.display.update()
         clock.tick(60)
-     
+
     while continue_game:
         while True:
             random_angle = np.random.uniform(0, 3.1415 * 2)
@@ -276,6 +283,7 @@ def display_game():
 
                 for j in Lista_LASSER:
                     if j.colide(i.pos_x, i.pos_y):
+                        killed_enemies += 1
                         List_Enemies.remove(i)
                         Lista_LASSER.remove(j)
                         break  # Rompe el ciclo for para hacer menos iteraciones
@@ -283,8 +291,18 @@ def display_game():
             if Player_1.bullets == 0:
                 continue_game = False
                 break
+            
+            
+                
+            font = pygame.font.Font("Andika-Bold.ttf", 25)
+            text = font.render(str(killed_enemies), True, BLUE)
+            textRect = text.get_rect()
+            textRect.center = (width // 2, height // 2)
+            DISPLAYSURF.blit(text, textRect)
+            
             pygame.display.update()
             clock.tick(60)
+            
 
     while True:
         for event in pygame.event.get():
@@ -321,7 +339,7 @@ bg = pygame.image.load("blue.png")
 background = pygame.transform.scale(bg, (400, 400))
 
 laser = pygame.mixer.Sound("images/laser.wav")
-hurt  = pygame.mixer.Sound("images/hurt.wav")
+hurt = pygame.mixer.Sound("images/hurt.wav")
 
 # Comenzando los colores
 BLACK = (10, 10, 10)
