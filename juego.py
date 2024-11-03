@@ -216,6 +216,7 @@ def display_game():
         DISPLAYSURF.blit(text2, textRect)
         pygame.display.update()
         clock.tick(60)
+############################################################################################################
 
     while continue_game:
         while True:
@@ -299,6 +300,10 @@ def display_game():
             DISPLAYSURF.blit(text, textRect)
             pygame.display.update()
             clock.tick(60)
+            
+            
+            
+############################################################################################################
             
     while True:
         for event in pygame.event.get():
