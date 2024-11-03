@@ -4,7 +4,7 @@ import pygame.locals as pl
 import numpy as np
 import math
 
-
+##T¿ODO FUNCINOA GRADKS
 class Player:  # Se genera un objeto para funcionar como avatar del jugador
     def __init__(self, pos_x, pos_y):  # Define los atributos iniciales del jugador
         self.pos_x = pos_x
