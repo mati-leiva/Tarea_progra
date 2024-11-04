@@ -123,7 +123,9 @@ class Point:  # Se define el objeto a usar como enemigo/objetivo del juego
     ):  # Metodo a usar para verificar si los puntos chocan contra jugador
         player = [x + 10, y + 10]
         rect = pygame.Rect((self.pos_x, self.pos_y, 13, 13))
-        self.color = GREEN if rect.collidepoint(player) else RED
+        if rect.collidepoint(player):
+            return True
+        return False
 
 
 ############################################################################################################
@@ -276,7 +278,7 @@ def display_game():
                 i.draw_point()
                 i.direction_to_char(Player_1.pos_x, Player_1.pos_y)
                 i.colide(Player_1.pos_x, Player_1.pos_y)
-                if i.color == GREEN:
+                if i.colide(Player_1.pos_x, Player_1.pos_y) == True:
                     Player_1.bullets //= 2
                     List_Enemies.remove(i)
                     hurt.play()
