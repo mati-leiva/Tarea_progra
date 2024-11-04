@@ -5,9 +5,9 @@ import numpy as np
 import math
 
 
-##T¿ODO FUNCINOA GRADKS
-class Player:  # Se genera un objeto para funcionar como avatar del jugador
-    def __init__(self, pos_x, pos_y):  # Define los atributos iniciales del jugador
+# Se genera un objeto para funcionar como avatar del jugador
+class Player:  
+    def __init__(self, pos_x, pos_y): 
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.vel_x = 2.0
@@ -18,9 +18,8 @@ class Player:  # Se genera un objeto para funcionar como avatar del jugador
     def draw_point(self, ship):
         DISPLAYSURF.blit(ship, (self.pos_x - 10, self.pos_y - 10))
 
-    def movement(
-        self,
-    ):  # Cambia el atributo de velocidad del jugador según las teclas presionadas
+    # Cambia el atributo de velocidad del jugador según las teclas presionadas
+    def movement(self):
         if pygame.key.get_pressed()[pl.K_a]:
             self.vel_x -= 0.2
         if pygame.key.get_pressed()[pl.K_d]:
@@ -32,7 +31,8 @@ class Player:  # Se genera un objeto para funcionar como avatar del jugador
         self.velocity_limit()
         self.update_position()
 
-    def velocity_limit(self):  # Define un limite del atributo velocidad
+    # Define un limite del atributo velocidad
+    def velocity_limit(self):  
         if (np.array([self.vel_x, self.vel_y]) ** 2).sum() ** 0.5 >= 4.0:
             self.vel_x = self.vel_x * 0.5
             self.vel_y = self.vel_y * 0.5
@@ -44,7 +44,8 @@ class Player:  # Se genera un objeto para funcionar como avatar del jugador
         textRect.center = (self.pos_x + 10, self.pos_y + 30)
         DISPLAYSURF.blit(text, textRect)
 
-    def shoot(self, lista):  # Metodo para disparar un lasser
+    # Metodo para disparar un lasser
+    def shoot(self, lista):  
         if self.bullets > 0:
             self.bullets -= 1
             mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -54,9 +55,8 @@ class Player:  # Se genera un objeto para funcionar como avatar del jugador
                 )
             )
 
-    def update_position(
-        self,
-    ):  # Cambia el atributo de posición según el atributo de velocidad, con un maximo y minimo
+    # Cambia la posición según la velocidad, con un maximo y minimo
+    def update_position(self):  
 
         if 8 < self.pos_x < width - 8:
             self.pos_x += self.vel_x
@@ -80,9 +80,10 @@ class Player:  # Se genera un objeto para funcionar como avatar del jugador
 ############################################################################################################
 
 
-class Point:  # Se define el objeto a usar como enemigo/objetivo del juego
+# Se define el objeto a usar como enemigo/objetivo del juego
+class Point:  
 
-    def __init__(self, pos_x, pos_y):  # Define atributos de condiciones iniciales
+    def __init__(self, pos_x, pos_y):  
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.vel_x = 0.0
@@ -92,9 +93,8 @@ class Point:  # Se define el objeto a usar como enemigo/objetivo del juego
     def draw_point(self):
         DISPLAYSURF.blit(asteroid, (self.pos_x - 15, self.pos_y - 15))
 
-    def direction_to_char(
-        self, x, y
-    ):  # Metodo con entrada que incluira la posición del jugador para dirigirse a este
+    #direcciona la velocidad al jugador
+    def direction_to_char(self, x, y): 
 
         dir_x = x + 10 - self.pos_x
         dir_y = y + 10 - self.pos_y
@@ -109,18 +109,19 @@ class Point:  # Se define el objeto a usar como enemigo/objetivo del juego
 
         Point.update_position(self)
 
-    def velocity_limit(self):  # Limita el atributo de velocidad
+    # Limita el atributo de velocidad
+    def velocity_limit(self):  
         if (np.array([self.vel_x, self.vel_y]) ** 2).sum() ** 0.5 >= 4.1:
             self.vel_x = self.vel_x * 0.2
             self.vel_y = self.vel_y * 0.2
 
-    def update_position(self):  # Cambia atributo posición según atributo velocidad
+    # Cambia atributo posición según atributo velocidad
+    def update_position(self):  
         self.pos_x += self.vel_x
         self.pos_y += self.vel_y
 
-    def colide(
-        self, x, y
-    ):  # Metodo a usar para verificar si los puntos chocan contra jugador
+    #verifica si los puntos chocan contra jugador
+    def colide(self, x, y):  
         player = [x + 10, y + 10]
         rect = pygame.Rect((self.pos_x, self.pos_y, 13, 13))
         if rect.collidepoint(player):
@@ -132,12 +133,12 @@ class Point:  # Se define el objeto a usar como enemigo/objetivo del juego
 
 
 class Consumable:  # Se define un objeto consumible
-    def __init__(self, pos_x, pos_y):  # constructor
+    def __init__(self, pos_x, pos_y): 
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.color = BLUE
 
-    def draw_point(self):  # dibujo
+    def draw_point(self):
         DISPLAYSURF.blit(bullet, (self.pos_x - 10, self.pos_y - 10))
 
     def colide(self, x, y):  # verifica si el jugador colisiona con el objeto
@@ -151,26 +152,30 @@ class Consumable:  # Se define un objeto consumible
 ############################################################################################################
 
 
-class LASSER:  # Se define una clase con objeto los laseres disparados por la nave
-    def __init__(self, pos_x, pos_y, velp_x, velp_y):  # constructor
+# Se define una clase con objeto los laseres disparados por la nave
+class LASSER:  
+    def __init__(self, pos_x, pos_y, velp_x, velp_y): 
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.vel_x = math.cos(math.atan2(velp_y, velp_x)) * 10
         self.vel_y = math.sin(math.atan2(velp_y, velp_x)) * 10
 
-    def draw_lasser(self):  # dibujo
+    def draw_lasser(self): 
         DISPLAYSURF.blit(fire, (self.pos_x, self.pos_y))
 
-    def update_position_LASSER(self):  # mover a siguiente posicion
+    # mover a siguiente posicion
+    def update_position_LASSER(self):  
         self.pos_x += self.vel_x
         self.pos_y += self.vel_y
 
-    def out_of_bound(self):  # verifica si se encuentra dentro de la pantalla
+     # verifica si se encuentra dentro de la pantalla
+    def out_of_bound(self): 
         if -11 < self.pos_x < 11 or -11 < self.pos_y < 11:
             return False
         return True
 
-    def colide(self, x, y):  # verifica si ha colisionado con un objeto punto
+    # verifica si ha colisionado con un objeto punto
+    def colide(self, x, y):  
         enemy = [x + 5, y + 5]
         rect = pygame.Rect((self.pos_x, self.pos_y, 25, 25))
         if rect.collidepoint(enemy):
@@ -186,7 +191,7 @@ def display_game():
     time_interval = 500
     next_step_time = 0
 
-    # Inicializa los objetos de jugador, punto y se genera una lista para contener objetos lasser
+    # Inicializa los objetos de jugador y listas para objetos lasser y punto
     Player_1 = Player(100, 100)
     killed_enemies = 0
     Lista_LASSER = []
@@ -199,6 +204,7 @@ def display_game():
     pygame.time.set_timer(pygame.USEREVENT, 2000)
     pygame.time.set_timer(pygame.USEREVENT + 1, 8000)
 
+    #Inicializa el juego
     while menu_game:
         for event in pygame.event.get():
             if event.type == pl.QUIT:
@@ -218,6 +224,7 @@ def display_game():
         DISPLAYSURF.blit(text2, textRect)
         pygame.display.update()
         clock.tick(60)
+
 ############################################################################################################
 
     while continue_game:
@@ -248,6 +255,7 @@ def display_game():
             if current_time > next_step_time:
                 next_step_time += time_interval
 
+            #rotar imagen de nave segun mouse
             mx, my = pygame.mouse.get_pos()
             dx, dy = mx - Player_1.pos_x, my - Player_1.pos_y
             angle = math.degrees(math.atan2(-dy, dx)) - 90
@@ -291,10 +299,12 @@ def display_game():
                         Lista_LASSER.remove(j)
                         break  # Rompe el ciclo for para hacer menos iteraciones
 
+            #verifica fin del juego
             if Player_1.bullets == 0:
                 continue_game = False
                 break
-                       
+
+            #UI contador de enemigos muertos
             font = pygame.font.Font("Andika-Bold.ttf", 25)
             text = font.render(str(killed_enemies), True, BLUE)
             textRect = text.get_rect()
@@ -303,10 +313,9 @@ def display_game():
             pygame.display.update()
             clock.tick(60)
             
-            
-            
 ############################################################################################################
-            
+
+    #termino del juego
     while True:
         for event in pygame.event.get():
             if event.type == pl.QUIT:
@@ -321,11 +330,11 @@ def display_game():
         pygame.display.update()
         clock.tick(60)
 
-
 ############################################################################################################
 
 pygame.init()
 
+#Cargan imagenes y sonidos para los objetos del juego
 original_ship = pygame.image.load("images/playerShip1_red.png")
 ship = pygame.transform.scale(original_ship, (40, 30))
 
@@ -340,6 +349,8 @@ fire = pygame.transform.scale(original_lasser, (15, 15))
 
 bg = pygame.image.load("blue.png")
 background = pygame.transform.scale(bg, (400, 400))
+#imagenes extraidas de opengameart.org
+#creditos a kenney.nl
 
 laser = pygame.mixer.Sound("images/laser.wav")
 hurt = pygame.mixer.Sound("images/hurt.wav")
@@ -357,6 +368,6 @@ width, height = 400, 400
 DISPLAYSURF = pygame.display.set_mode((width, height), 0, 32)
 clock = pygame.time.Clock()
 pygame.display.set_caption("hello World")
-# Inicializando el juego
 
+# Inicializando el juego
 display_game()
